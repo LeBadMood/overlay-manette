@@ -1,0 +1,428 @@
+/*
+  SCREAM / GHOSTFACE - XBOX THEME (Gamepad Viewer / gamepadviewer.com)
+
+  Based on scream_ghostface_gpv_safe.css from
+  https://github.com/ScReaMCOD/Overlay-manette-ps5, converted to the Xbox skin.
+
+  The whole controller is drawn with ghostface_raiju_shell.png (1536 x 1024),
+  shown at half size (768 x 512). Every control reuses a slice of that image:
+    - at rest, the red lights around the controls are switched off
+      (desaturated / dimmed slice of the artwork);
+    - when pressed, the slice is shown as in the PNG, lit up in blood red.
+
+  Usage: gamepadviewer.com -> pick "Xbox One" -> paste this file in "Custom CSS"
+  (or use ?p=1&css=<url of this file> in the OBS browser source).
+  Recommended OBS browser source size: 800 x 560.
+
+  To host the image yourself, change --shell below.
+  Tune how "off" the lights look at rest with --off.
+*/
+
+.controller.xbox,
+.controller.xbox.white,
+.controller.xbox.disconnected {
+    --shell: url("https://raw.githubusercontent.com/LeBadMood/overlay-manette/main/ghostface_raiju_shell.png");
+    --off: saturate(0.12) brightness(0.72);
+    --blood: rgba(255, 0, 25, 0.95);
+    --blood-soft: rgba(190, 0, 15, 0.8);
+    --lit:
+        brightness(1.15) saturate(1.3)
+        drop-shadow(0 0 6px var(--blood))
+        drop-shadow(0 0 14px var(--blood-soft));
+
+    width: 768px;
+    height: 512px;
+    /* Always centred in the page, whatever Gamepad Viewer's own layout is. */
+    position: fixed !important;
+    left: 50% !important;
+    top: 50% !important;
+    margin: -256px 0 0 -384px !important;
+    transform: none !important;
+    background: var(--shell) no-repeat 0 0 / 768px 512px;
+    filter: drop-shadow(0 0 10px rgba(150, 0, 15, 0.35));
+}
+
+/* Disconnected: same artwork, everything switched off. */
+.controller.xbox.disconnected {
+    filter: grayscale(1) brightness(0.45);
+}
+
+.controller.xbox.disconnected div {
+    display: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Groups: full-size layers so every part is placed in image coordinates.
+--------------------------------------------------------------------------- */
+.controller.xbox .triggers,
+.controller.xbox .bumpers,
+.controller.xbox .arrows,
+.controller.xbox .abxy,
+.controller.xbox .sticks,
+.controller.xbox .dpad {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 768px;
+    height: 512px;
+    margin: 0;
+    pointer-events: none;
+}
+
+/* Player quadrant: the Xbox logo of the artwork already plays that role
+   (it stays lit like the real controller's power light). */
+.controller.xbox .quadrant {
+    display: none;
+}
+
+/* Every slice of the shell image: controls and the "lights off" layers. */
+.controller.xbox .trigger,
+.controller.xbox .trigger.left,
+.controller.xbox .trigger.right,
+.controller.xbox .button,
+.controller.xbox .button.pressed,
+.controller.xbox .back,
+.controller.xbox .start,
+.controller.xbox .meta,
+.controller.xbox .stick,
+.controller.xbox .stick.pressed,
+.controller.xbox .face,
+.controller.xbox .face.pressed,
+.controller.xbox .triggers::before,
+.controller.xbox .triggers::after,
+.controller.xbox .bumpers::before,
+.controller.xbox .bumpers::after,
+.controller.xbox .dpad::before {
+    position: absolute;
+    float: none;
+    margin: 0;
+    background-image: var(--shell);
+    background-repeat: no-repeat;
+    background-size: 768px 512px;
+    transition: filter 80ms ease, opacity 80ms ease;
+}
+
+/* Soft round edge so the switched-off / lit areas blend into the artwork. */
+.controller.xbox .button,
+.controller.xbox .face,
+.controller.xbox .bumpers::before,
+.controller.xbox .bumpers::after,
+.controller.xbox .dpad::before {
+    -webkit-mask-image: radial-gradient(closest-side, #000 74%, transparent 100%);
+    mask-image: radial-gradient(closest-side, #000 74%, transparent 100%);
+}
+
+/* ---------------------------------------------------------------------------
+   Triggers (LT / RT)
+   ::before / ::after = trigger switched off, always shown.
+   .trigger = trigger lit; Gamepad Viewer drives its opacity (or clip-path in
+   "meter" mode) with the pressure, so the light follows the analog value.
+--------------------------------------------------------------------------- */
+.controller.xbox .triggers::before,
+.controller.xbox .triggers::after {
+    content: "";
+    top: 0;
+    width: 112px;
+    height: 50px;
+    filter: var(--off);
+}
+
+.controller.xbox .triggers::before {
+    left: 142px;
+    background-position: -142px 0;
+}
+
+.controller.xbox .triggers::after {
+    left: 518px;
+    background-position: -518px 0;
+}
+
+.controller.xbox .trigger,
+.controller.xbox .trigger.left,
+.controller.xbox .trigger.right {
+    top: 0;
+    width: 112px;
+    height: 50px;
+    z-index: 1;
+    opacity: 0;
+    transform: none;
+    filter: var(--lit);
+}
+
+.controller.xbox .trigger.left {
+    left: 142px;
+    background-position: -142px 0;
+}
+
+.controller.xbox .trigger.right {
+    left: 518px;
+    background-position: -518px 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Bumpers (LB / RB) - the red shoulder edge of the artwork flares up.
+--------------------------------------------------------------------------- */
+.controller.xbox .bumper,
+.controller.xbox .bumper.left,
+.controller.xbox .bumper.right {
+    position: absolute;
+    float: none;
+    top: 30px;
+    width: 190px;
+    height: 56px;
+    margin: 0;
+    background-image: var(--shell);
+    background-repeat: no-repeat;
+    background-size: 768px 512px;
+    opacity: 0;
+    transform: none;
+    filter:
+        brightness(1.6) saturate(1.5)
+        drop-shadow(0 0 5px var(--blood))
+        drop-shadow(0 0 12px var(--blood-soft));
+    -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent 100%);
+    mask-image: radial-gradient(closest-side, #000 60%, transparent 100%);
+    transition: opacity 80ms ease;
+}
+
+.controller.xbox .bumper.left {
+    left: 100px;
+    background-position: -100px -30px;
+}
+
+.controller.xbox .bumper.right {
+    left: 478px;
+    background-position: -478px -30px;
+}
+
+.controller.xbox .bumper.pressed {
+    opacity: 1;
+}
+
+/* ---------------------------------------------------------------------------
+   Stick rings - switched off at rest, lit on stick click (LS / RS).
+   (Lighting on click needs :has(), available in OBS 31+ / recent Chrome.)
+--------------------------------------------------------------------------- */
+.controller.xbox .bumpers::before,
+.controller.xbox .bumpers::after {
+    content: "";
+    width: 140px;
+    height: 140px;
+    filter: var(--off);
+}
+
+.controller.xbox .bumpers::before {
+    left: 130px;
+    top: 78px;
+    background-position: -130px -78px;
+}
+
+.controller.xbox .bumpers::after {
+    left: 421px;
+    top: 186px;
+    width: 150px;
+    height: 150px;
+    background-position: -421px -186px;
+}
+
+.controller.xbox:has(.stick.left.pressed) .bumpers::before,
+.controller.xbox:has(.stick.right.pressed) .bumpers::after {
+    filter: var(--lit);
+}
+
+/* ---------------------------------------------------------------------------
+   Sticks - the cap is cut out of the image and follows the stick.
+   Gamepad Viewer moves them with margin-top/left + rotateX/Y.
+--------------------------------------------------------------------------- */
+
+/* Dark wells hide the printed caps so only the moving cap is visible. */
+.controller.xbox .sticks::before,
+.controller.xbox .sticks::after {
+    content: "";
+    position: absolute;
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #050505 0 55%, #151515 72%, rgba(20, 20, 20, 0) 100%);
+}
+
+.controller.xbox .sticks::before {
+    left: 162px;
+    top: 109px;
+}
+
+.controller.xbox .sticks::after {
+    left: 458px;
+    top: 223px;
+}
+
+.controller.xbox .stick {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.85);
+}
+
+.controller.xbox .stick.left,
+.controller.xbox .stick.left.pressed {
+    left: 168px;
+    top: 115px;
+    background-position: -168px -115px;
+}
+
+.controller.xbox .stick.right,
+.controller.xbox .stick.right.pressed {
+    left: 464px;
+    top: 229px;
+    background-position: -464px -229px;
+}
+
+.controller.xbox .stick.pressed {
+    filter: brightness(1.25);
+    box-shadow:
+        0 0 0 2px rgba(255, 30, 50, 0.9),
+        0 0 16px var(--blood);
+}
+
+/* ---------------------------------------------------------------------------
+   A / B / X / Y - each slice covers the button and its red halo.
+--------------------------------------------------------------------------- */
+.controller.xbox .button {
+    width: 80px;
+    height: 80px;
+    right: auto;
+    opacity: 1;
+    filter: var(--off);
+}
+
+.controller.xbox .button.y,
+.controller.xbox .button.y.pressed {
+    left: 565px;
+    top: 78px;
+    background-position: -565px -78px;
+}
+
+.controller.xbox .button.x,
+.controller.xbox .button.x.pressed {
+    left: 512px;
+    top: 124px;
+    background-position: -512px -124px;
+}
+
+.controller.xbox .button.b,
+.controller.xbox .button.b.pressed {
+    left: 612px;
+    top: 124px;
+    background-position: -612px -124px;
+}
+
+.controller.xbox .button.a,
+.controller.xbox .button.a.pressed {
+    left: 564px;
+    top: 174px;
+    background-position: -564px -174px;
+}
+
+.controller.xbox .button.pressed {
+    z-index: 2;
+    filter: var(--lit);
+}
+
+/* ---------------------------------------------------------------------------
+   D-pad - the cross outline is off at rest, each direction lights up.
+--------------------------------------------------------------------------- */
+.controller.xbox .dpad::before {
+    content: "";
+    left: 235px;
+    top: 205px;
+    width: 136px;
+    height: 136px;
+    background-position: -235px -205px;
+    filter: var(--off);
+}
+
+.controller.xbox .face {
+    opacity: 0;
+    width: 76px;
+    height: 70px;
+    filter: var(--lit);
+}
+
+.controller.xbox .face.pressed {
+    opacity: 1;
+    z-index: 2;
+}
+
+.controller.xbox .face.up {
+    left: 265px;
+    top: 203px;
+    background-position: -265px -203px;
+}
+
+.controller.xbox .face.down {
+    left: 265px;
+    top: 273px;
+    bottom: auto;
+    background-position: -265px -273px;
+}
+
+.controller.xbox .face.left,
+.controller.xbox .face.right {
+    width: 70px;
+    height: 76px;
+    top: 235px;
+}
+
+.controller.xbox .face.left {
+    left: 235px;
+    background-position: -235px -235px;
+}
+
+.controller.xbox .face.right {
+    left: 301px;
+    right: auto;
+    background-position: -301px -235px;
+}
+
+/* ---------------------------------------------------------------------------
+   View / Menu / Guide (white icons: they flash white + red when pressed)
+--------------------------------------------------------------------------- */
+.controller.xbox .back,
+.controller.xbox .start,
+.controller.xbox .meta {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    opacity: 1;
+    transition: filter 80ms ease, transform 80ms ease;
+}
+
+.controller.xbox .back {
+    left: 294px;
+    top: 136px;
+    background-position: -294px -136px;
+}
+
+.controller.xbox .start {
+    left: 433px;
+    top: 137px;
+    background-position: -433px -137px;
+}
+
+.controller.xbox .meta {
+    left: 350px;
+    top: 64px;
+    width: 66px;
+    height: 66px;
+    background-position: -350px -64px;
+}
+
+.controller.xbox .back.pressed,
+.controller.xbox .start.pressed,
+.controller.xbox .meta.pressed {
+    transform: scale(0.92);
+    filter:
+        brightness(1.8) contrast(1.1)
+        drop-shadow(0 0 4px rgba(255, 255, 255, 0.85))
+        drop-shadow(0 0 12px var(--blood));
+}
