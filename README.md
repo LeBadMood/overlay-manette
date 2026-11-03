@@ -29,6 +29,13 @@ L'image est chargée depuis
 Pour l'héberger ailleurs, change `--shell` en haut du CSS.
 Pour régler l'intensité des lumières éteintes, change `--off`.
 
+## Sans Gamepad Viewer
+
+`preview.html` lit directement la manette (API Gamepad du navigateur) :
+
+- navigateur : https://raw.githack.com/LeBadMood/overlay-manette/main/preview.html
+- OBS (fond transparent) : https://raw.githack.com/LeBadMood/overlay-manette/main/preview.html?obs
+
 ## Aperçu local
 
 Ouvre `preview.html` dans un navigateur (manette branchée ou clavier :
