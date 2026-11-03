@@ -261,6 +261,8 @@
 }
 
 .controller:is(.xbox, .custom) .stick {
+    /* Above both wells (.sticks::after is painted after the sticks). */
+    z-index: 1;
     width: 64px;
     height: 64px;
     border-radius: 50%;
