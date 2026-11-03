@@ -71,9 +71,23 @@ copies sur GitHub (`dracula/gamepad-viewer` `xbox/edit.css`, `heddaz/shoubing` `
 - Quelques versions de Gamepad Viewer déplacent le stick droit avec `margin-bottom/right` au lieu de
   `margin-top/left`. Si le stick droit ne bouge pas, c'est la cause probable.
 
-## 5. Problème en cours : écran blanc sur Gamepad Viewer
+## 5. Écran blanc sur Gamepad Viewer : RÉSOLU
 
-L'utilisateur voit un **écran blanc** avec ce lien :
+**Cause (vérifiée dans le vrai `main.js` de gamepadviewer.com)** : avec le paramètre `css=`, Gamepad Viewer
+exécute `switchClass("#gamepads .controller", "xbox", "custom")`. La manette n'a donc plus la classe `xbox`
+mais `custom`, et aucune règle `.controller.xbox` du thème ne s'appliquait : écran blanc.
+
+**Correctif** : tous les sélecteurs sont passés en `.controller:is(.xbox, .custom)` (même spécificité,
+marche aussi avec `preview.html` qui garde `.xbox`). Testé sur une copie locale de gamepadviewer.com
+(index.html, style.css, main.js, tester.js d'origine) : avant = blanc, après = manette visible, grise tant
+qu'elle est déconnectée, et A/Y/RT/LB/croix/Menu s'allument quand on simule `.pressed`.
+
+Autres constats sur le vrai HTML : les contrôles sont des `<span>` ; `.meta` est un enfant direct de la
+manette (pas dans `.arrows`) ; il existe aussi `.trigger-button`, `.touchpad`, `.wheels`, `.fstick` (sans taille
+en mode `custom`, donc invisibles). Le CSS injecté par `css=` passe après `style.css`, donc gagne à égalité
+de spécificité.
+
+Historique (avant le correctif) — l'utilisateur voyait un **écran blanc** avec ce lien :
 
 https://gamepadviewer.com/?p=1&css=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2FLeBadMood%2Foverlay-manette%403aaa6ed03728726c127cc6d6d226b401736ab71d%2Fscream_ghostface_xbox.css
 

@@ -18,8 +18,8 @@ Lien direct (navigateur ou source navigateur OBS **800 × 560**) :
 
 https://gamepadviewer.com/?p=1&css=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2FLeBadMood%2Foverlay-manette%40main%2Fscream_ghostface_xbox.css
 
-Appuie sur un bouton de la manette pour qu'elle soit détectée.
-Si une autre manette s'affiche, choisis **Xbox One** dans Gamepad Viewer.
+Tant que la manette n'est pas détectée, elle s'affiche en gris :
+appuie sur un bouton pour qu'elle s'allume.
 
 ![Au repos](apercu_repos.png)
 ![Boutons appuyés](apercu_appui.png)
